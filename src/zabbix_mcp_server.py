@@ -13,7 +13,7 @@ License: MIT
 import os
 import json
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 from fastmcp import FastMCP
 from zabbix_utils import ZabbixAPI
 from dotenv import load_dotenv
@@ -111,7 +111,7 @@ def validate_read_only() -> None:
 def host_get(hostids: Optional[List[str]] = None, 
              groupids: Optional[List[str]] = None,
              templateids: Optional[List[str]] = None,
-             output: str = "extend",
+             output: Union[str, List[str]] = "extend",
              search: Optional[Dict[str, str]] = None,
              filter: Optional[Dict[str, Any]] = None,
              limit: Optional[int] = None) -> str:
@@ -121,7 +121,7 @@ def host_get(hostids: Optional[List[str]] = None,
         hostids: List of host IDs to retrieve
         groupids: List of host group IDs to filter by
         templateids: List of template IDs to filter by
-        output: Output format (extend, shorten, or specific fields)
+        output: "extend" or list of fields to return
         search: Search criteria
         filter: Filter criteria
         limit: Maximum number of results
@@ -130,7 +130,7 @@ def host_get(hostids: Optional[List[str]] = None,
         str: JSON formatted list of hosts
     """
     client = get_zabbix_client()
-    params = {"output": output}
+    params: Dict[str, Any] = {"output": output}
     
     if hostids:
         params["hostids"] = hostids
@@ -236,14 +236,14 @@ def host_delete(hostids: List[str]) -> str:
 # HOST GROUP MANAGEMENT
 @mcp.tool()
 def hostgroup_get(groupids: Optional[List[str]] = None,
-                  output: str = "extend",
+                  output: Union[str, List[str]] = "extend",
                   search: Optional[Dict[str, str]] = None,
                   filter: Optional[Dict[str, Any]] = None) -> str:
     """Get host groups from Zabbix.
     
     Args:
         groupids: List of group IDs to retrieve
-        output: Output format
+        output: "extend" or list of fields to return
         search: Search criteria
         filter: Filter criteria
         
@@ -251,7 +251,7 @@ def hostgroup_get(groupids: Optional[List[str]] = None,
         str: JSON formatted list of host groups
     """
     client = get_zabbix_client()
-    params = {"output": output}
+    params: Dict[str, Any] = {"output": output}
     
     if groupids:
         params["groupids"] = groupids
@@ -322,7 +322,7 @@ def item_get(itemids: Optional[List[str]] = None,
              hostids: Optional[List[str]] = None,
              groupids: Optional[List[str]] = None,
              templateids: Optional[List[str]] = None,
-             output: str = "extend",
+             output: Union[str, List[str]] = "extend",
              search: Optional[Dict[str, str]] = None,
              filter: Optional[Dict[str, Any]] = None,
              limit: Optional[int] = None) -> str:
@@ -333,7 +333,7 @@ def item_get(itemids: Optional[List[str]] = None,
         hostids: List of host IDs to filter by
         groupids: List of host group IDs to filter by
         templateids: List of template IDs to filter by
-        output: Output format
+        output: "extend" or list of fields to return
         search: Search criteria
         filter: Filter criteria
         limit: Maximum number of results
@@ -342,7 +342,7 @@ def item_get(itemids: Optional[List[str]] = None,
         str: JSON formatted list of items
     """
     client = get_zabbix_client()
-    params = {"output": output}
+    params: Dict[str, Any] = {"output": output}
     
     if itemids:
         params["itemids"] = itemids
@@ -461,9 +461,15 @@ def trigger_get(triggerids: Optional[List[str]] = None,
                 hostids: Optional[List[str]] = None,
                 groupids: Optional[List[str]] = None,
                 templateids: Optional[List[str]] = None,
-                output: str = "extend",
+                output: Union[str, List[str]] = "extend",
                 search: Optional[Dict[str, str]] = None,
                 filter: Optional[Dict[str, Any]] = None,
+                monitored: Optional[bool] = None,
+                expandDescription: Optional[bool] = None,
+                selectHosts: Optional[Union[str, List[str]]] = None,
+                selectLastEvent: Optional[Union[str, List[str]]] = None,
+                sortfield: Optional[List[str]] = None,
+                sortorder: Optional[str] = None,
                 limit: Optional[int] = None) -> str:
     """Get triggers from Zabbix with optional filtering.
     
@@ -472,16 +478,22 @@ def trigger_get(triggerids: Optional[List[str]] = None,
         hostids: List of host IDs to filter by
         groupids: List of host group IDs to filter by
         templateids: List of template IDs to filter by
-        output: Output format
-        search: Search criteria
-        filter: Filter criteria
-        limit: Maximum number of results
+        output: "extend" or list of fields to return.
+        monitored: Return only triggers on monitored hosts/items.
+        search: Search criteria.
+        filter: Filter criteria.
+        expandDescription: Expand macros in description.
+        selectHosts: "extend" or list of host fields to include.
+        selectLastEvent: "extend" or list of last event fields to include.
+        sortfield: Fields to sort by.
+        sortorder: "ASC" or "DESC".
+        limit: Maximum number of results.
         
     Returns:
         str: JSON formatted list of triggers
     """
     client = get_zabbix_client()
-    params = {"output": output}
+    params: Dict[str, Any] = {"output": output}
     
     if triggerids:
         params["triggerids"] = triggerids
@@ -497,7 +509,19 @@ def trigger_get(triggerids: Optional[List[str]] = None,
         params["filter"] = filter
     if limit:
         params["limit"] = limit
-    
+    if monitored:
+        params["monitored"] = monitored
+    if expandDescription:
+        params["expandDescription"] = expandDescription
+    if selectHosts:
+        params["selectHosts"] = selectHosts
+    if selectLastEvent:
+        params["selectLastEvent"] = selectLastEvent
+    if sortfield:
+        params["sortfield"] = sortfield
+    if sortorder:
+       params["sortorder"] = sortorder
+
     result = client.trigger.get(**params)
     return format_response(result)
 
@@ -591,7 +615,7 @@ def trigger_delete(triggerids: List[str]) -> str:
 def template_get(templateids: Optional[List[str]] = None,
                  groupids: Optional[List[str]] = None,
                  hostids: Optional[List[str]] = None,
-                 output: str = "extend",
+                 output: Union[str, List[str]] = "extend",
                  search: Optional[Dict[str, str]] = None,
                  filter: Optional[Dict[str, Any]] = None) -> str:
     """Get templates from Zabbix with optional filtering.
@@ -600,7 +624,7 @@ def template_get(templateids: Optional[List[str]] = None,
         templateids: List of template IDs to retrieve
         groupids: List of host group IDs to filter by
         hostids: List of host IDs to filter by
-        output: Output format
+        output: "extend" or list of fields to return
         search: Search criteria
         filter: Filter criteria
         
@@ -608,7 +632,7 @@ def template_get(templateids: Optional[List[str]] = None,
         str: JSON formatted list of templates
     """
     client = get_zabbix_client()
-    params = {"output": output}
+    params: Dict[str, Any] = {"output": output}
     
     if templateids:
         params["templateids"] = templateids
@@ -709,7 +733,7 @@ def problem_get(eventids: Optional[List[str]] = None,
                 groupids: Optional[List[str]] = None,
                 hostids: Optional[List[str]] = None,
                 objectids: Optional[List[str]] = None,
-                output: str = "extend",
+                output: Union[str, List[str]] = "extend",
                 time_from: Optional[int] = None,
                 time_till: Optional[int] = None,
                 recent: bool = False,
@@ -722,7 +746,7 @@ def problem_get(eventids: Optional[List[str]] = None,
         groupids: List of host group IDs to filter by
         hostids: List of host IDs to filter by
         objectids: List of object IDs to filter by
-        output: Output format
+        output: "extend" or list of fields to return
         time_from: Start time (Unix timestamp)
         time_till: End time (Unix timestamp)
         recent: Only recent problems
@@ -733,7 +757,7 @@ def problem_get(eventids: Optional[List[str]] = None,
         str: JSON formatted list of problems
     """
     client = get_zabbix_client()
-    params = {"output": output}
+    params: Dict[str, Any] = {"output": output}
     
     if eventids:
         params["eventids"] = eventids
@@ -764,7 +788,7 @@ def event_get(eventids: Optional[List[str]] = None,
               groupids: Optional[List[str]] = None,
               hostids: Optional[List[str]] = None,
               objectids: Optional[List[str]] = None,
-              output: str = "extend",
+              output: Union[str, List[str]] = "extend",
               time_from: Optional[int] = None,
               time_till: Optional[int] = None,
               limit: Optional[int] = None) -> str:
@@ -775,7 +799,7 @@ def event_get(eventids: Optional[List[str]] = None,
         groupids: List of host group IDs to filter by
         hostids: List of host IDs to filter by
         objectids: List of object IDs to filter by
-        output: Output format
+        output: "extend" or list of fields to return
         time_from: Start time (Unix timestamp)
         time_till: End time (Unix timestamp)
         limit: Maximum number of results
@@ -784,7 +808,7 @@ def event_get(eventids: Optional[List[str]] = None,
         str: JSON formatted list of events
     """
     client = get_zabbix_client()
-    params = {"output": output}
+    params: Dict[str, Any] = {"output": output}
     
     if eventids:
         params["eventids"] = eventids
@@ -907,14 +931,14 @@ def trend_get(itemids: List[str], time_from: Optional[int] = None,
 # USER MANAGEMENT
 @mcp.tool()
 def user_get(userids: Optional[List[str]] = None,
-             output: str = "extend",
+             output: Union[str, List[str]] = "extend",
              search: Optional[Dict[str, str]] = None,
              filter: Optional[Dict[str, Any]] = None) -> str:
     """Get users from Zabbix with optional filtering.
     
     Args:
         userids: List of user IDs to retrieve
-        output: Output format
+        output: "extend" or list of fields to return
         search: Search criteria
         filter: Filter criteria
         
@@ -922,7 +946,7 @@ def user_get(userids: Optional[List[str]] = None,
         str: JSON formatted list of users
     """
     client = get_zabbix_client()
-    params = {"output": output}
+    params: Dict[str, Any] = {"output": output}
     
     if userids:
         params["userids"] = userids
@@ -1028,20 +1052,20 @@ def user_delete(userids: List[str]) -> str:
 def maintenance_get(maintenanceids: Optional[List[str]] = None,
                     groupids: Optional[List[str]] = None,
                     hostids: Optional[List[str]] = None,
-                    output: str = "extend") -> str:
+                    output: Union[str, List[str]] = "extend") -> str:
     """Get maintenance periods from Zabbix.
     
     Args:
         maintenanceids: List of maintenance IDs to retrieve
         groupids: List of host group IDs to filter by
         hostids: List of host IDs to filter by
-        output: Output format
+        output: "extend" or list of fields to return
         
     Returns:
         str: JSON formatted list of maintenance periods
     """
     client = get_zabbix_client()
-    params = {"output": output}
+    params: Dict[str, Any] = {"output": output}
     
     if maintenanceids:
         params["maintenanceids"] = maintenanceids
@@ -1152,7 +1176,7 @@ def maintenance_delete(maintenanceids: List[str]) -> str:
 def graph_get(graphids: Optional[List[str]] = None,
               hostids: Optional[List[str]] = None,
               templateids: Optional[List[str]] = None,
-              output: str = "extend",
+              output: Union[str, List[str]] = "extend",
               search: Optional[Dict[str, str]] = None,
               filter: Optional[Dict[str, Any]] = None) -> str:
     """Get graphs from Zabbix with optional filtering.
@@ -1161,7 +1185,7 @@ def graph_get(graphids: Optional[List[str]] = None,
         graphids: List of graph IDs to retrieve
         hostids: List of host IDs to filter by
         templateids: List of template IDs to filter by
-        output: Output format
+        output: "extend" or list of fields to return
         search: Search criteria
         filter: Filter criteria
         
@@ -1169,7 +1193,7 @@ def graph_get(graphids: Optional[List[str]] = None,
         str: JSON formatted list of graphs
     """
     client = get_zabbix_client()
-    params = {"output": output}
+    params: Dict[str, Any] = {"output": output}
     
     if graphids:
         params["graphids"] = graphids
@@ -1191,7 +1215,7 @@ def graph_get(graphids: Optional[List[str]] = None,
 def discoveryrule_get(itemids: Optional[List[str]] = None,
                       hostids: Optional[List[str]] = None,
                       templateids: Optional[List[str]] = None,
-                      output: str = "extend",
+                      output: Union[str, List[str]] = "extend",
                       search: Optional[Dict[str, str]] = None,
                       filter: Optional[Dict[str, Any]] = None) -> str:
     """Get discovery rules from Zabbix with optional filtering.
@@ -1200,7 +1224,7 @@ def discoveryrule_get(itemids: Optional[List[str]] = None,
         itemids: List of discovery rule IDs to retrieve
         hostids: List of host IDs to filter by
         templateids: List of template IDs to filter by
-        output: Output format
+        output: "extend" or list of fields to return
         search: Search criteria
         filter: Filter criteria
         
@@ -1208,7 +1232,7 @@ def discoveryrule_get(itemids: Optional[List[str]] = None,
         str: JSON formatted list of discovery rules
     """
     client = get_zabbix_client()
-    params = {"output": output}
+    params: Dict[str, Any] = {"output": output}
     
     if itemids:
         params["itemids"] = itemids
@@ -1230,7 +1254,7 @@ def discoveryrule_get(itemids: Optional[List[str]] = None,
 def itemprototype_get(itemids: Optional[List[str]] = None,
                       discoveryids: Optional[List[str]] = None,
                       hostids: Optional[List[str]] = None,
-                      output: str = "extend",
+                      output: Union[str, List[str]] = "extend",
                       search: Optional[Dict[str, str]] = None,
                       filter: Optional[Dict[str, Any]] = None) -> str:
     """Get item prototypes from Zabbix with optional filtering.
@@ -1239,7 +1263,7 @@ def itemprototype_get(itemids: Optional[List[str]] = None,
         itemids: List of item prototype IDs to retrieve
         discoveryids: List of discovery rule IDs to filter by
         hostids: List of host IDs to filter by
-        output: Output format
+        output: "extend" or list of fields to return
         search: Search criteria
         filter: Filter criteria
         
@@ -1247,7 +1271,7 @@ def itemprototype_get(itemids: Optional[List[str]] = None,
         str: JSON formatted list of item prototypes
     """
     client = get_zabbix_client()
-    params = {"output": output}
+    params: Dict[str, Any] = {"output": output}
     
     if itemids:
         params["itemids"] = itemids
@@ -1317,7 +1341,7 @@ def configuration_import(format: str, source: str,
 @mcp.tool()
 def usermacro_get(globalmacroids: Optional[List[str]] = None,
                   hostids: Optional[List[str]] = None,
-                  output: str = "extend",
+                  output: Union[str, List[str]] = "extend",
                   search: Optional[Dict[str, str]] = None,
                   filter: Optional[Dict[str, Any]] = None) -> str:
     """Get global macros from Zabbix with optional filtering.
@@ -1325,7 +1349,7 @@ def usermacro_get(globalmacroids: Optional[List[str]] = None,
     Args:
         globalmacroids: List of global macro IDs to retrieve
         hostids: List of host IDs to filter by (for host macros)
-        output: Output format (extend, shorten, or specific fields)
+        output: "extend" or list of fields to return
         search: Search criteria
         filter: Filter criteria
         
@@ -1333,7 +1357,7 @@ def usermacro_get(globalmacroids: Optional[List[str]] = None,
         str: JSON formatted list of global macros
     """
     client = get_zabbix_client()
-    params = {"output": output}
+    params: Dict[str, Any] = {"output": output}
     
     if globalmacroids:
         params["globalmacroids"] = globalmacroids
