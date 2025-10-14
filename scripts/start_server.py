@@ -67,6 +67,21 @@ def check_environment() -> bool:
         print("  - Both ZABBIX_USER and ZABBIX_PASSWORD")
         return False
     
+    # Check transport configuration
+    transport = os.getenv("ZABBIX_MCP_TRANSPORT", "stdio").lower()
+    if transport not in ["stdio", "streamable-http"]:
+        logger.error(f"Invalid ZABBIX_MCP_TRANSPORT: {transport}")
+        print(f"Error: Invalid ZABBIX_MCP_TRANSPORT: {transport}")
+        print("Valid values are: stdio, streamable-http")
+        return False
+    
+    if transport == "streamable-http":
+        auth_type = os.getenv("AUTH_TYPE", "").lower()
+        if auth_type != "no-auth":
+            logger.error("AUTH_TYPE must be 'no-auth' for streamable-http transport")
+            print("Error: AUTH_TYPE must be set to 'no-auth' when using streamable-http transport")
+            return False
+    
     return True
 
 
@@ -98,6 +113,24 @@ def show_configuration() -> None:
         logger.warning("Authentication: Not configured")
     
     print(f"Authentication: {auth_method}")
+    
+    # Transport configuration
+    transport = os.getenv('ZABBIX_MCP_TRANSPORT', 'stdio')
+    print(f"Transport: {transport}")
+    logger.info(f"Transport: {transport}")
+    
+    if transport == 'streamable-http':
+        host = os.getenv('ZABBIX_MCP_HOST', '127.0.0.1')
+        port = os.getenv('ZABBIX_MCP_PORT', '8000')
+        stateless = os.getenv('ZABBIX_MCP_STATELESS_HTTP', 'false')
+        auth_type = os.getenv('AUTH_TYPE', 'Not set')
+        
+        print(f"  - Host: {host}")
+        print(f"  - Port: {port}")
+        print(f"  - Stateless: {stateless}")
+        print(f"  - Auth Type: {auth_type}")
+        
+        logger.info(f"HTTP Transport - Host: {host}, Port: {port}, Stateless: {stateless}, Auth: {auth_type}")
     
     # Read-only mode
     read_only = os.getenv('READ_ONLY', 'true').lower() in ('true', '1', 'yes')

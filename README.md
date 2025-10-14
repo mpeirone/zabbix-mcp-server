@@ -121,6 +121,16 @@ A comprehensive Model Context Protocol (MCP) server for Zabbix integration using
 
 - `READ_ONLY` - Set to `true`, `1`, or `yes` to enable read-only mode (only GET operations allowed)
 
+### Transport Configuration
+
+- `ZABBIX_MCP_TRANSPORT` - Transport type: `stdio` (default) or `streamable-http`
+
+**HTTP Transport Configuration** (only used when `ZABBIX_MCP_TRANSPORT=streamable-http`):
+- `ZABBIX_MCP_HOST` - Server host (default: `127.0.0.1`)
+- `ZABBIX_MCP_PORT` - Server port (default: `8000`)
+- `ZABBIX_MCP_STATELESS_HTTP` - Stateless mode (default: `false`)
+- `AUTH_TYPE` - Must be set to `no-auth` for streamable-http transport
+
 ## Usage
 
 ### Running the Server
@@ -134,6 +144,30 @@ uv run python scripts/start_server.py
 ```bash
 uv run python src/zabbix_mcp_server.py
 ```
+
+### Transport Options
+
+The server supports two transport methods:
+
+#### STDIO Transport (Default)
+Standard input/output transport for MCP clients like Claude Desktop:
+```bash
+# Set in .env or environment
+ZABBIX_MCP_TRANSPORT=stdio
+```
+
+#### HTTP Transport
+HTTP-based transport for web integrations:
+```bash
+# Set in .env or environment
+ZABBIX_MCP_TRANSPORT=streamable-http
+ZABBIX_MCP_HOST=127.0.0.1
+ZABBIX_MCP_PORT=8000
+ZABBIX_MCP_STATELESS_HTTP=false
+AUTH_TYPE=no-auth
+```
+
+**Note:** When using `streamable-http` transport, `AUTH_TYPE` must be set to `no-auth`.
 
 ### Testing
 

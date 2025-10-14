@@ -23,9 +23,9 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-"fastmcp>=2.8.1",
+"fastmcp>=v2.12.4",
 "zabbix_utils>=2.0.3",
-"python-dotenv>=1.1.0"
+"python-dotenv>=1.1.1"
 ]
 requires-python = ">=3.10"
 

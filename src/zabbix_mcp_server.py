@@ -1385,16 +1385,66 @@ def apiinfo_version() -> str:
     return format_response(result)
 
 
+def get_transport_config() -> Dict[str, Any]:
+    """Get transport configuration from environment variables.
+    
+    Returns:
+        Dict[str, Any]: Transport configuration
+        
+    Raises:
+        ValueError: If invalid transport configuration
+    """
+    transport = os.getenv("ZABBIX_MCP_TRANSPORT", "stdio").lower()
+    
+    if transport not in ["stdio", "streamable-http"]:
+        raise ValueError(f"Invalid ZABBIX_MCP_TRANSPORT: {transport}. Must be 'stdio' or 'streamable-http'")
+    
+    config = {"transport": transport}
+    
+    if transport == "streamable-http":
+        # Check AUTH_TYPE requirement
+        auth_type = os.getenv("AUTH_TYPE", "").lower()
+        if auth_type != "no-auth":
+            raise ValueError("AUTH_TYPE must be set to 'no-auth' when using streamable-http transport")
+        
+        # Get HTTP configuration with defaults
+        config.update({
+            "host": os.getenv("ZABBIX_MCP_HOST", "127.0.0.1"),
+            "port": int(os.getenv("ZABBIX_MCP_PORT", "8000")),
+            "stateless_http": os.getenv("ZABBIX_MCP_STATELESS_HTTP", "false").lower() in ("true", "1", "yes")
+        })
+        
+        logger.info(f"HTTP transport configured: {config['host']}:{config['port']}, stateless_http={config['stateless_http']}")
+    
+    return config
+
+
 def main():
     """Main entry point for uv execution."""
     logger.info("Starting Zabbix MCP Server")
+    
+    # Get transport configuration
+    try:
+        transport_config = get_transport_config()
+        logger.info(f"Transport: {transport_config['transport']}")
+    except ValueError as e:
+        logger.error(f"Transport configuration error: {e}")
+        return 1
     
     # Log configuration
     logger.info(f"Read-only mode: {is_read_only()}")
     logger.info(f"Zabbix URL: {os.getenv('ZABBIX_URL', 'Not configured')}")
     
     try:
-        mcp.run()
+        if transport_config["transport"] == "stdio":
+            mcp.run()
+        else:  # streamable-http
+            mcp.run(
+                transport="streamable-http",
+                host=transport_config["host"],
+                port=transport_config["port"],
+                stateless_http=transport_config["stateless_http"]
+            )
     except KeyboardInterrupt:
         logger.info("Server stopped by user")
     except Exception as e:

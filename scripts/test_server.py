@@ -163,6 +163,46 @@ def test_basic_operations() -> bool:
         return False
 
 
+def test_transport_config() -> bool:
+    """Test transport configuration.
+    
+    Returns:
+        bool: True if transport configuration is valid
+    """
+    print("\n🔍 Testing transport configuration...")
+    
+    try:
+        from zabbix_mcp_server import get_transport_config
+        
+        config = get_transport_config()
+        transport = config["transport"]
+        
+        print(f"✅ Transport type: {transport}")
+        
+        if transport == "streamable-http":
+            print(f"  - Host: {config['host']}")
+            print(f"  - Port: {config['port']}")
+            print(f"  - Stateless: {config['stateless']}")
+            
+            # Check AUTH_TYPE requirement
+            auth_type = os.getenv("AUTH_TYPE", "").lower()
+            if auth_type == "no-auth":
+                print("  ✅ AUTH_TYPE correctly set to 'no-auth'")
+            else:
+                print("  ❌ AUTH_TYPE must be set to 'no-auth' for HTTP transport")
+                return False
+        
+        return True
+        
+    except ValueError as e:
+        print(f"❌ Transport configuration error: {e}")
+        return False
+        
+    except Exception as e:
+        print(f"❌ Unexpected error testing transport: {e}")
+        return False
+
+
 def test_read_only_mode() -> bool:
     """Test read-only mode functionality.
     
@@ -235,6 +275,7 @@ def main() -> None:
     tests = [
         ("Module Import", test_import),
         ("Environment Configuration", test_environment),
+        ("Transport Configuration", test_transport_config),
         ("Zabbix Connection", test_connection),
         ("Basic Operations", test_basic_operations),
         ("Read-Only Mode", test_read_only_mode),
