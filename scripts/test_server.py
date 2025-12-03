@@ -158,6 +158,14 @@ def test_basic_operations() -> bool:
             print(f"    ✅ Retrieved {len(items)} item(s)")
         else:
             print("    ⚠️  No items found (this might be normal)")
+
+        # Test auditlogs
+        print("  - Testing item retrieval...")
+        auditlogs = client.auditlog.get(limit=5)
+        if auditlogs:
+            print(f"    ✅ Retrieved {len(items)} auditlog(s)", auditlogs)
+        else:
+            print("    ⚠️  No items found (this might be normal)")
         
         print("✅ Basic operations successful")
         return True

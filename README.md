@@ -76,6 +76,9 @@ A comprehensive Model Context Protocol (MCP) server for Zabbix integration using
 - `configuration_import` - Import configurations
 - `apiinfo_version` - Get API version information
 
+### Auditlog Management
+- `auditlog_get` - Retrieve auditlog with date and limit filters
+
 ## Installation
 
 ### Prerequisites

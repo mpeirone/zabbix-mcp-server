@@ -1523,6 +1523,34 @@ def get_transport_config() -> Dict[str, Any]:
     
     return config
 
+# AUDIT LOG MANAGEMENT
+@mcp.tool()
+def auditlog_get(time_from: Optional[int] = None,
+              time_till: Optional[int] = None,
+              limit: Optional[int] = None) -> str:
+    """Get auditlog from Zabbix.
+
+    Args:
+        auditids: List of item IDs to get trends for
+        time_from: Start time (Unix timestamp)
+        time_till: End time (Unix timestamp)
+        limit: Maximum number of results
+
+    Returns:
+        str: JSON formatted auditlog
+    """
+    client = get_zabbix_client()
+    params = {}
+
+    if time_from:
+        params["time_from"] = time_from
+    if time_till:
+        params["time_till"] = time_till
+    if limit:
+        params["limit"] = limit
+
+    result = client.auditlog.get(**params)
+    return format_response(result)
 
 def main():
     """Main entry point for uv execution."""
