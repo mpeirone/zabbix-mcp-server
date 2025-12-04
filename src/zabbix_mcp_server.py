@@ -118,7 +118,11 @@ def host_get(hostids: Optional[List[str]] = None,
              output: Union[str, List[str]] = "extend",
              search: Optional[Dict[str, str]] = None,
              filter: Optional[Dict[str, Any]] = None,
-             limit: Optional[int] = None) -> str:
+             limit: Optional[int] = None,
+             sessionId: Optional[str] = None,
+             action: Optional[str] = None,
+             toolCallId: Optional[str] = None,
+             chatInput: Optional[str] = None) -> str:
     """Get hosts from Zabbix with optional filtering.
     
     Args:
@@ -158,7 +162,11 @@ def host_create(host: str, groups: List[Dict[str, str]],
                 interfaces: List[Dict[str, Any]],
                 templates: Optional[List[Dict[str, str]]] = None,
                 inventory_mode: int = -1,
-                status: int = 0) -> str:
+                status: int = 0,
+                sessionId: Optional[str] = None,
+                action: Optional[str] = None,
+                toolCallId: Optional[str] = None,
+                chatInput: Optional[str] = None) -> str:
     """Create a new host in Zabbix.
     
     Args:
@@ -192,7 +200,11 @@ def host_create(host: str, groups: List[Dict[str, str]],
 
 @mcp.tool()
 def host_update(hostid: str, host: Optional[str] = None, 
-                name: Optional[str] = None, status: Optional[int] = None) -> str:
+                name: Optional[str] = None, status: Optional[int] = None,
+                sessionId: Optional[str] = None,
+                action: Optional[str] = None,
+                toolCallId: Optional[str] = None,
+                chatInput: Optional[str] = None) -> str:
     """Update an existing host in Zabbix.
     
     Args:
@@ -221,7 +233,11 @@ def host_update(hostid: str, host: Optional[str] = None,
 
 
 @mcp.tool()
-def host_delete(hostids: List[str]) -> str:
+def host_delete(hostids: List[str],
+                sessionId: Optional[str] = None,
+                action: Optional[str] = None,
+                toolCallId: Optional[str] = None,
+                chatInput: Optional[str] = None) -> str:
     """Delete hosts from Zabbix.
     
     Args:
@@ -242,7 +258,11 @@ def host_delete(hostids: List[str]) -> str:
 def hostgroup_get(groupids: Optional[List[str]] = None,
                   output: Union[str, List[str]] = "extend",
                   search: Optional[Dict[str, str]] = None,
-                  filter: Optional[Dict[str, Any]] = None) -> str:
+                  filter: Optional[Dict[str, Any]] = None,
+                  sessionId: Optional[str] = None,
+                  action: Optional[str] = None,
+                  toolCallId: Optional[str] = None,
+                  chatInput: Optional[str] = None) -> str:
     """Get host groups from Zabbix.
     
     Args:
@@ -269,7 +289,11 @@ def hostgroup_get(groupids: Optional[List[str]] = None,
 
 
 @mcp.tool()
-def hostgroup_create(name: str) -> str:
+def hostgroup_create(name: str,
+                     sessionId: Optional[str] = None,
+                     action: Optional[str] = None,
+                     toolCallId: Optional[str] = None,
+                     chatInput: Optional[str] = None) -> str:
     """Create a new host group in Zabbix.
     
     Args:
@@ -286,7 +310,11 @@ def hostgroup_create(name: str) -> str:
 
 
 @mcp.tool()
-def hostgroup_update(groupid: str, name: str) -> str:
+def hostgroup_update(groupid: str, name: str,
+                     sessionId: Optional[str] = None,
+                     action: Optional[str] = None,
+                     toolCallId: Optional[str] = None,
+                     chatInput: Optional[str] = None) -> str:
     """Update an existing host group in Zabbix.
     
     Args:
@@ -304,7 +332,11 @@ def hostgroup_update(groupid: str, name: str) -> str:
 
 
 @mcp.tool()
-def hostgroup_delete(groupids: List[str]) -> str:
+def hostgroup_delete(groupids: List[str],
+                     sessionId: Optional[str] = None,
+                     action: Optional[str] = None,
+                     toolCallId: Optional[str] = None,
+                     chatInput: Optional[str] = None) -> str:
     """Delete host groups from Zabbix.
     
     Args:
@@ -329,7 +361,11 @@ def item_get(itemids: Optional[List[str]] = None,
              output: Union[str, List[str]] = "extend",
              search: Optional[Dict[str, str]] = None,
              filter: Optional[Dict[str, Any]] = None,
-             limit: Optional[int] = None) -> str:
+             limit: Optional[int] = None,
+             sessionId: Optional[str] = None,
+             action: Optional[str] = None,
+             toolCallId: Optional[str] = None,
+             chatInput: Optional[str] = None) -> str:
     """Get items from Zabbix with optional filtering.
     
     Args:
@@ -371,7 +407,11 @@ def item_get(itemids: Optional[List[str]] = None,
 def item_create(name: str, key_: str, hostid: str, type: int,
                 value_type: int, delay: str = "1m",
                 units: Optional[str] = None,
-                description: Optional[str] = None) -> str:
+                description: Optional[str] = None,
+                sessionId: Optional[str] = None,
+                action: Optional[str] = None,
+                toolCallId: Optional[str] = None,
+                chatInput: Optional[str] = None) -> str:
     """Create a new item in Zabbix.
     
     Args:
@@ -411,7 +451,11 @@ def item_create(name: str, key_: str, hostid: str, type: int,
 @mcp.tool()
 def item_update(itemid: str, name: Optional[str] = None,
                 key_: Optional[str] = None, delay: Optional[str] = None,
-                status: Optional[int] = None) -> str:
+                status: Optional[int] = None,
+                sessionId: Optional[str] = None,
+                action: Optional[str] = None,
+                toolCallId: Optional[str] = None,
+                chatInput: Optional[str] = None) -> str:
     """Update an existing item in Zabbix.
     
     Args:
@@ -443,7 +487,11 @@ def item_update(itemid: str, name: Optional[str] = None,
 
 
 @mcp.tool()
-def item_delete(itemids: List[str]) -> str:
+def item_delete(itemids: List[str],
+                sessionId: Optional[str] = None,
+                action: Optional[str] = None,
+                toolCallId: Optional[str] = None,
+                chatInput: Optional[str] = None) -> str:
     """Delete items from Zabbix.
     
     Args:
@@ -468,7 +516,11 @@ def trigger_get(triggerids: Optional[List[str]] = None,
                 output: Union[str, List[str]] = "extend",
                 search: Optional[Dict[str, str]] = None,
                 filter: Optional[Dict[str, Any]] = None,
-                limit: Optional[int] = None) -> str:
+                limit: Optional[int] = None,
+                sessionId: Optional[str] = None,
+                action: Optional[str] = None,
+                toolCallId: Optional[str] = None,
+                chatInput: Optional[str] = None) -> str:
     """Get triggers from Zabbix with optional filtering.
     
     Args:
@@ -509,7 +561,11 @@ def trigger_get(triggerids: Optional[List[str]] = None,
 @mcp.tool()
 def trigger_create(description: str, expression: str,
                    priority: int = 0, status: int = 0,
-                   comments: Optional[str] = None) -> str:
+                   comments: Optional[str] = None,
+                   sessionId: Optional[str] = None,
+                   action: Optional[str] = None,
+                   toolCallId: Optional[str] = None,
+                   chatInput: Optional[str] = None) -> str:
     """Create a new trigger in Zabbix.
     
     Args:
@@ -542,7 +598,11 @@ def trigger_create(description: str, expression: str,
 @mcp.tool()
 def trigger_update(triggerid: str, description: Optional[str] = None,
                    expression: Optional[str] = None, priority: Optional[int] = None,
-                   status: Optional[int] = None) -> str:
+                   status: Optional[int] = None,
+                   sessionId: Optional[str] = None,
+                   action: Optional[str] = None,
+                   toolCallId: Optional[str] = None,
+                   chatInput: Optional[str] = None) -> str:
     """Update an existing trigger in Zabbix.
     
     Args:
@@ -574,7 +634,11 @@ def trigger_update(triggerid: str, description: Optional[str] = None,
 
 
 @mcp.tool()
-def trigger_delete(triggerids: List[str]) -> str:
+def trigger_delete(triggerids: List[str],
+                   sessionId: Optional[str] = None,
+                   action: Optional[str] = None,
+                   toolCallId: Optional[str] = None,
+                   chatInput: Optional[str] = None) -> str:
     """Delete triggers from Zabbix.
     
     Args:
@@ -597,7 +661,11 @@ def template_get(templateids: Optional[List[str]] = None,
                  hostids: Optional[List[str]] = None,
                  output: Union[str, List[str]] = "extend",
                  search: Optional[Dict[str, str]] = None,
-                 filter: Optional[Dict[str, Any]] = None) -> str:
+                 filter: Optional[Dict[str, Any]] = None,
+                 sessionId: Optional[str] = None,
+                 action: Optional[str] = None,
+                 toolCallId: Optional[str] = None,
+                 chatInput: Optional[str] = None) -> str:
     """Get templates from Zabbix with optional filtering.
     
     Args:
@@ -631,7 +699,11 @@ def template_get(templateids: Optional[List[str]] = None,
 
 @mcp.tool()
 def template_create(host: str, groups: List[Dict[str, str]],
-                    name: Optional[str] = None, description: Optional[str] = None) -> str:
+                    name: Optional[str] = None, description: Optional[str] = None,
+                    sessionId: Optional[str] = None,
+                    action: Optional[str] = None,
+                    toolCallId: Optional[str] = None,
+                    chatInput: Optional[str] = None) -> str:
     """Create a new template in Zabbix.
     
     Args:
@@ -662,7 +734,11 @@ def template_create(host: str, groups: List[Dict[str, str]],
 
 @mcp.tool()
 def template_update(templateid: str, host: Optional[str] = None,
-                    name: Optional[str] = None, description: Optional[str] = None) -> str:
+                    name: Optional[str] = None, description: Optional[str] = None,
+                    sessionId: Optional[str] = None,
+                    action: Optional[str] = None,
+                    toolCallId: Optional[str] = None,
+                    chatInput: Optional[str] = None) -> str:
     """Update an existing template in Zabbix.
     
     Args:
@@ -691,7 +767,11 @@ def template_update(templateid: str, host: Optional[str] = None,
 
 
 @mcp.tool()
-def template_delete(templateids: List[str]) -> str:
+def template_delete(templateids: List[str],
+                    sessionId: Optional[str] = None,
+                    action: Optional[str] = None,
+                    toolCallId: Optional[str] = None,
+                    chatInput: Optional[str] = None) -> str:
     """Delete templates from Zabbix.
     
     Args:
@@ -718,7 +798,11 @@ def problem_get(eventids: Optional[List[str]] = None,
                 time_till: Optional[int] = None,
                 recent: bool = False,
                 severities: Optional[List[int]] = None,
-                limit: Optional[int] = None) -> str:
+                limit: Optional[int] = None,
+                sessionId: Optional[str] = None,
+                action: Optional[str] = None,
+                toolCallId: Optional[str] = None,
+                chatInput: Optional[str] = None) -> str:
     """Get problems from Zabbix with optional filtering.
     
     Args:
@@ -771,7 +855,11 @@ def event_get(eventids: Optional[List[str]] = None,
               output: Union[str, List[str]] = "extend",
               time_from: Optional[int] = None,
               time_till: Optional[int] = None,
-              limit: Optional[int] = None) -> str:
+              limit: Optional[int] = None,
+              sessionId: Optional[str] = None,
+              action: Optional[str] = None,
+              toolCallId: Optional[str] = None,
+              chatInput: Optional[str] = None) -> str:
     """Get events from Zabbix with optional filtering.
     
     Args:
@@ -810,8 +898,11 @@ def event_get(eventids: Optional[List[str]] = None,
 
 
 @mcp.tool()
-def event_acknowledge(eventids: List[str], action: int = 1,
-                      message: Optional[str] = None) -> str:
+def event_acknowledge(eventids: List[str], action: Union[int, str] = 1,
+                      message: Optional[str] = None,
+                      sessionId: Optional[str] = None,
+                      toolCallId: Optional[str] = None,
+                      chatInput: Optional[str] = None) -> str:
     """Acknowledge events in Zabbix.
     
     Args:
@@ -824,10 +915,14 @@ def event_acknowledge(eventids: List[str], action: int = 1,
     """
     validate_read_only()
     
+    # Handle n8n action collision
+    if isinstance(action, str) and not action.isdigit():
+        action = 1
+    
     client = get_zabbix_client()
     params = {
         "eventids": eventids,
-        "action": action
+        "action": int(action)
     }
     
     if message:
@@ -844,7 +939,11 @@ def history_get(itemids: List[str], history: int = 0,
                 time_till: Optional[int] = None,
                 limit: Optional[int] = None,
                 sortfield: str = "clock",
-                sortorder: str = "DESC") -> str:
+                sortorder: str = "DESC",
+                sessionId: Optional[str] = None,
+                action: Optional[str] = None,
+                toolCallId: Optional[str] = None,
+                chatInput: Optional[str] = None) -> str:
     """Get history data from Zabbix.
     
     Args:
@@ -882,7 +981,11 @@ def history_get(itemids: List[str], history: int = 0,
 @mcp.tool()
 def trend_get(itemids: List[str], time_from: Optional[int] = None,
               time_till: Optional[int] = None,
-              limit: Optional[int] = None) -> str:
+              limit: Optional[int] = None,
+              sessionId: Optional[str] = None,
+              action: Optional[str] = None,
+              toolCallId: Optional[str] = None,
+              chatInput: Optional[str] = None) -> str:
     """Get trend data from Zabbix.
     
     Args:
@@ -913,7 +1016,11 @@ def trend_get(itemids: List[str], time_from: Optional[int] = None,
 def user_get(userids: Optional[List[str]] = None,
              output: Union[str, List[str]] = "extend",
              search: Optional[Dict[str, str]] = None,
-             filter: Optional[Dict[str, Any]] = None) -> str:
+             filter: Optional[Dict[str, Any]] = None,
+             sessionId: Optional[str] = None,
+             action: Optional[str] = None,
+             toolCallId: Optional[str] = None,
+             chatInput: Optional[str] = None) -> str:
     """Get users from Zabbix with optional filtering.
     
     Args:
@@ -942,7 +1049,11 @@ def user_get(userids: Optional[List[str]] = None,
 @mcp.tool()
 def user_create(username: str, passwd: str, usrgrps: List[Dict[str, str]],
                 name: Optional[str] = None, surname: Optional[str] = None,
-                email: Optional[str] = None) -> str:
+                email: Optional[str] = None,
+                sessionId: Optional[str] = None,
+                action: Optional[str] = None,
+                toolCallId: Optional[str] = None,
+                chatInput: Optional[str] = None) -> str:
     """Create a new user in Zabbix.
     
     Args:
@@ -979,7 +1090,11 @@ def user_create(username: str, passwd: str, usrgrps: List[Dict[str, str]],
 @mcp.tool()
 def user_update(userid: str, username: Optional[str] = None,
                 name: Optional[str] = None, surname: Optional[str] = None,
-                email: Optional[str] = None) -> str:
+                email: Optional[str] = None,
+                sessionId: Optional[str] = None,
+                action: Optional[str] = None,
+                toolCallId: Optional[str] = None,
+                chatInput: Optional[str] = None) -> str:
     """Update an existing user in Zabbix.
     
     Args:
@@ -1011,7 +1126,11 @@ def user_update(userid: str, username: Optional[str] = None,
 
 
 @mcp.tool()
-def user_delete(userids: List[str]) -> str:
+def user_delete(userids: List[str],
+                sessionId: Optional[str] = None,
+                action: Optional[str] = None,
+                toolCallId: Optional[str] = None,
+                chatInput: Optional[str] = None) -> str:
     """Delete users from Zabbix.
     
     Args:
@@ -1033,7 +1152,11 @@ def proxy_get(proxyids: Optional[List[str]] = None,
               output: str = "extend",
               search: Optional[Dict[str, str]] = None,
               filter: Optional[Dict[str, Any]] = None,
-              limit: Optional[int] = None) -> str:
+              limit: Optional[int] = None,
+              sessionId: Optional[str] = None,
+              action: Optional[str] = None,
+              toolCallId: Optional[str] = None,
+              chatInput: Optional[str] = None) -> str:
     """Get proxies from Zabbix with optional filtering.
     
     Args:
@@ -1066,7 +1189,11 @@ def proxy_get(proxyids: Optional[List[str]] = None,
 def proxy_create(host: str, status: int = 5,
                  description: Optional[str] = None,
                  tls_connect: int = 1,
-                 tls_accept: int = 1) -> str:
+                 tls_accept: int = 1,
+                 sessionId: Optional[str] = None,
+                 action: Optional[str] = None,
+                 toolCallId: Optional[str] = None,
+                 chatInput: Optional[str] = None) -> str:
     """Create a new proxy in Zabbix.
     
     Args:
@@ -1101,7 +1228,11 @@ def proxy_update(proxyid: str, host: Optional[str] = None,
                  status: Optional[int] = None,
                  description: Optional[str] = None,
                  tls_connect: Optional[int] = None,
-                 tls_accept: Optional[int] = None) -> str:
+                 tls_accept: Optional[int] = None,
+                 sessionId: Optional[str] = None,
+                 action: Optional[str] = None,
+                 toolCallId: Optional[str] = None,
+                 chatInput: Optional[str] = None) -> str:
     """Update an existing proxy in Zabbix.
     
     Args:
@@ -1136,7 +1267,11 @@ def proxy_update(proxyid: str, host: Optional[str] = None,
 
 
 @mcp.tool()
-def proxy_delete(proxyids: List[str]) -> str:
+def proxy_delete(proxyids: List[str],
+                 sessionId: Optional[str] = None,
+                 action: Optional[str] = None,
+                 toolCallId: Optional[str] = None,
+                 chatInput: Optional[str] = None) -> str:
     """Delete proxies from Zabbix.
     
     Args:
@@ -1157,7 +1292,11 @@ def proxy_delete(proxyids: List[str]) -> str:
 def maintenance_get(maintenanceids: Optional[List[str]] = None,
                     groupids: Optional[List[str]] = None,
                     hostids: Optional[List[str]] = None,
-                    output: Union[str, List[str]] = "extend") -> str:
+                    output: Union[str, List[str]] = "extend",
+                    sessionId: Optional[str] = None,
+                    action: Optional[str] = None,
+                    toolCallId: Optional[str] = None,
+                    chatInput: Optional[str] = None) -> str:
     """Get maintenance periods from Zabbix.
     
     Args:
@@ -1188,7 +1327,11 @@ def maintenance_create(name: str, active_since: int, active_till: int,
                        groupids: Optional[List[str]] = None,
                        hostids: Optional[List[str]] = None,
                        timeperiods: Optional[List[Dict[str, Any]]] = None,
-                       description: Optional[str] = None) -> str:
+                       description: Optional[str] = None,
+                       sessionId: Optional[str] = None,
+                       action: Optional[str] = None,
+                       toolCallId: Optional[str] = None,
+                       chatInput: Optional[str] = None) -> str:
     """Create a new maintenance period in Zabbix.
     
     Args:
@@ -1228,7 +1371,11 @@ def maintenance_create(name: str, active_since: int, active_till: int,
 @mcp.tool()
 def maintenance_update(maintenanceid: str, name: Optional[str] = None,
                        active_since: Optional[int] = None, active_till: Optional[int] = None,
-                       description: Optional[str] = None) -> str:
+                       description: Optional[str] = None,
+                       sessionId: Optional[str] = None,
+                       action: Optional[str] = None,
+                       toolCallId: Optional[str] = None,
+                       chatInput: Optional[str] = None) -> str:
     """Update an existing maintenance period in Zabbix.
     
     Args:
@@ -1260,7 +1407,11 @@ def maintenance_update(maintenanceid: str, name: Optional[str] = None,
 
 
 @mcp.tool()
-def maintenance_delete(maintenanceids: List[str]) -> str:
+def maintenance_delete(maintenanceids: List[str],
+                       sessionId: Optional[str] = None,
+                       action: Optional[str] = None,
+                       toolCallId: Optional[str] = None,
+                       chatInput: Optional[str] = None) -> str:
     """Delete maintenance periods from Zabbix.
     
     Args:
@@ -1283,7 +1434,11 @@ def graph_get(graphids: Optional[List[str]] = None,
               templateids: Optional[List[str]] = None,
               output: Union[str, List[str]] = "extend",
               search: Optional[Dict[str, str]] = None,
-              filter: Optional[Dict[str, Any]] = None) -> str:
+              filter: Optional[Dict[str, Any]] = None,
+              sessionId: Optional[str] = None,
+              action: Optional[str] = None,
+              toolCallId: Optional[str] = None,
+              chatInput: Optional[str] = None) -> str:
     """Get graphs from Zabbix with optional filtering.
     
     Args:
@@ -1322,7 +1477,11 @@ def discoveryrule_get(itemids: Optional[List[str]] = None,
                       templateids: Optional[List[str]] = None,
                       output: Union[str, List[str]] = "extend",
                       search: Optional[Dict[str, str]] = None,
-                      filter: Optional[Dict[str, Any]] = None) -> str:
+                      filter: Optional[Dict[str, Any]] = None,
+                      sessionId: Optional[str] = None,
+                      action: Optional[str] = None,
+                      toolCallId: Optional[str] = None,
+                      chatInput: Optional[str] = None) -> str:
     """Get discovery rules from Zabbix with optional filtering.
     
     Args:
@@ -1361,7 +1520,11 @@ def itemprototype_get(itemids: Optional[List[str]] = None,
                       hostids: Optional[List[str]] = None,
                       output: Union[str, List[str]] = "extend",
                       search: Optional[Dict[str, str]] = None,
-                      filter: Optional[Dict[str, Any]] = None) -> str:
+                      filter: Optional[Dict[str, Any]] = None,
+                      sessionId: Optional[str] = None,
+                      action: Optional[str] = None,
+                      toolCallId: Optional[str] = None,
+                      chatInput: Optional[str] = None) -> str:
     """Get item prototypes from Zabbix with optional filtering.
     
     Args:
@@ -1396,7 +1559,11 @@ def itemprototype_get(itemids: Optional[List[str]] = None,
 # CONFIGURATION EXPORT/IMPORT
 @mcp.tool()
 def configuration_export(format: str = "json",
-                         options: Optional[Dict[str, Any]] = None) -> str:
+                         options: Optional[Dict[str, Any]] = None,
+                         sessionId: Optional[str] = None,
+                         action: Optional[str] = None,
+                         toolCallId: Optional[str] = None,
+                         chatInput: Optional[str] = None) -> str:
     """Export configuration from Zabbix.
     
     Args:
@@ -1418,7 +1585,11 @@ def configuration_export(format: str = "json",
 
 @mcp.tool()
 def configuration_import(format: str, source: str,
-                         rules: Dict[str, Any]) -> str:
+                         rules: Dict[str, Any],
+                         sessionId: Optional[str] = None,
+                         action: Optional[str] = None,
+                         toolCallId: Optional[str] = None,
+                         chatInput: Optional[str] = None) -> str:
     """Import configuration to Zabbix.
     
     Args:
@@ -1448,7 +1619,11 @@ def usermacro_get(globalmacroids: Optional[List[str]] = None,
                   hostids: Optional[List[str]] = None,
                   output: Union[str, List[str]] = "extend",
                   search: Optional[Dict[str, str]] = None,
-                  filter: Optional[Dict[str, Any]] = None) -> str:
+                  filter: Optional[Dict[str, Any]] = None,
+                  sessionId: Optional[str] = None,
+                  action: Optional[str] = None,
+                  toolCallId: Optional[str] = None,
+                  chatInput: Optional[str] = None) -> str:
     """Get global macros from Zabbix with optional filtering.
     
     Args:
@@ -1479,7 +1654,10 @@ def usermacro_get(globalmacroids: Optional[List[str]] = None,
 
 # SYSTEM INFO
 @mcp.tool()
-def apiinfo_version() -> str:
+def apiinfo_version(sessionId: Optional[str] = None,
+                    action: Optional[str] = None,
+                    toolCallId: Optional[str] = None,
+                    chatInput: Optional[str] = None) -> str:
     """Get Zabbix API version information.
     
     Returns:
