@@ -254,7 +254,9 @@ This server is designed to work with MCP-compatible clients like Claude Desktop.
 
 ## Docker Support
 
-### Using Docker Compose
+### Using Docker Compose (SSE Mode)
+
+The default Docker setup runs the server in SSE (Server-Sent Events) mode for HTTP-based integrations:
 
 1. **Configure environment:**
    ```bash
@@ -264,7 +266,49 @@ This server is designed to work with MCP-compatible clients like Claude Desktop.
 
 2. **Run with Docker Compose:**
    ```bash
-   docker compose up -d
+   docker-compose up -d
+   ```
+
+3. **Verify health:**
+   ```bash
+   docker ps --filter "name=zabbix-mcp-server"
+   # Should show "healthy" status
+   ```
+
+### Using Docker with STDIO Mode (Claude Code Integration)
+
+For Claude Code integration using stdio transport, use `docker exec` to run the server:
+
+1. **Start the container in background:**
+   ```bash
+   docker-compose up -d
+   ```
+
+2. **Add to Claude Code's `.claude.json`:**
+   ```json
+   {
+     "mcpServers": {
+       "zabbix": {
+         "type": "stdio",
+         "command": "docker",
+         "args": [
+           "exec",
+           "-i",
+           "zabbix-mcp-server",
+           "python",
+           "-c",
+           "import sys; sys.path.insert(0, 'src'); from zabbix_mcp_server import mcp; mcp.run(transport='stdio')"
+         ],
+         "env": {}
+       }
+     }
+   }
+   ```
+
+3. **Reload Claude Code:**
+   ```bash
+   # Reload Claude Code to pick up the new MCP server
+   # The Zabbix MCP should now appear as "connected"
    ```
 
 ### Building Docker Image
