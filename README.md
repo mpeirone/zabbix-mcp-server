@@ -49,6 +49,8 @@ A comprehensive Model Context Protocol (MCP) server for Zabbix integration using
 ### 📈 Data Retrieval
 - `history_get` - Access historical monitoring data
 - `trend_get` - Retrieve trend data and statistics
+- `history_get_aggregated` - Get aggregated historical data for extended time periods (auto-selects trends or history)
+- `host_metrics_30d` - Retrieve 30-day historical metrics (CPU, RAM, Network) with automatic item discovery
 
 ### 👤 User Management
 - `user_get` - Retrieve user accounts
@@ -231,6 +233,28 @@ history_get(
     itemids=["12345"],
     time_from=1640995200,
     limit=100
+)
+```
+
+**Get aggregated historical data (auto-selects trends or history):**
+```python
+# Automatically tries trend data first (365-day retention)
+# Falls back to history data (7-day retention) if needed
+history_get_aggregated(
+    itemids=["95652", "95657", "95684"],
+    time_from=1733097600,  # Unix timestamp
+    time_till=1734307200,
+    interval_minutes=60    # 60-minute aggregation buckets
+)
+```
+
+**Get 30-day host metrics with automatic item discovery:**
+```python
+# Automatically discovers CPU, RAM, and Network items for the host
+# Returns 30 days of hourly trend data
+host_metrics_30d(
+    hostid="10963",
+    metrics=["cpu", "ram", "network"]  # Optional, defaults to all three
 )
 ```
 

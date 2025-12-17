@@ -884,28 +884,302 @@ def trend_get(itemids: List[str], time_from: Optional[int] = None,
               time_till: Optional[int] = None,
               limit: Optional[int] = None) -> str:
     """Get trend data from Zabbix.
-    
+
     Args:
         itemids: List of item IDs to get trends for
         time_from: Start time (Unix timestamp)
         time_till: End time (Unix timestamp)
         limit: Maximum number of results
-        
+
     Returns:
         str: JSON formatted trend data
     """
     client = get_zabbix_client()
     params = {"itemids": itemids}
-    
+
     if time_from:
         params["time_from"] = time_from
     if time_till:
         params["time_till"] = time_till
     if limit:
         params["limit"] = limit
-    
+
     result = client.trend.get(**params)
     return format_response(result)
+
+
+@mcp.tool()
+def history_get_aggregated(itemids: List[str],
+                           time_from: int,
+                           time_till: int,
+                           interval_minutes: int = 60) -> str:
+    """Get aggregated historical data from Zabbix for extended time periods.
+
+    This function attempts to retrieve data using multiple strategies:
+    1. Try trend data first (hourly aggregates, stored for 365 days)
+    2. Fall back to history data with aggregation (stored for shorter period)
+
+    Args:
+        itemids: List of item IDs to retrieve data for
+        time_from: Start time (Unix timestamp)
+        time_till: End time (Unix timestamp)
+        interval_minutes: Aggregation interval in minutes (default: 60)
+
+    Returns:
+        str: JSON formatted aggregated data with timestamps, avg/min/max values
+    """
+    client = get_zabbix_client()
+    results = {}
+
+    for itemid in itemids:
+        # First, get item info to determine value type
+        item_info = client.item.get(itemids=[itemid], output=["value_type", "name"])
+        if not item_info:
+            results[itemid] = {"error": "Item not found"}
+            continue
+
+        value_type = int(item_info[0].get("value_type", 0))
+        item_name = item_info[0].get("name", "Unknown")
+
+        # Determine history type: 0=float, 3=unsigned int
+        history_type = 0 if value_type == 0 else 3
+
+        # Try trend data first (more efficient for long periods)
+        trend_data = client.trend.get(
+            itemids=[itemid],
+            time_from=time_from,
+            time_till=time_till
+        )
+
+        if trend_data:
+            # Format trend data
+            formatted_data = []
+            for point in trend_data:
+                formatted_data.append({
+                    "timestamp": int(point["clock"]),
+                    "value_min": float(point["value_min"]),
+                    "value_avg": float(point["value_avg"]),
+                    "value_max": float(point["value_max"]),
+                    "num": int(point.get("num", 1))
+                })
+
+            results[itemid] = {
+                "name": item_name,
+                "source": "trend",
+                "data": formatted_data
+            }
+        else:
+            # Fall back to history data
+            history_data = client.history.get(
+                itemids=[itemid],
+                history=history_type,
+                time_from=time_from,
+                time_till=time_till,
+                sortfield="clock",
+                sortorder="ASC"
+            )
+
+            if history_data:
+                # Aggregate history data by interval
+                aggregated = {}
+                for point in history_data:
+                    timestamp = int(point["clock"])
+                    value = float(point["value"])
+
+                    # Calculate interval bucket
+                    interval_seconds = interval_minutes * 60
+                    bucket = (timestamp // interval_seconds) * interval_seconds
+
+                    if bucket not in aggregated:
+                        aggregated[bucket] = {
+                            "values": [],
+                            "count": 0
+                        }
+
+                    aggregated[bucket]["values"].append(value)
+                    aggregated[bucket]["count"] += 1
+
+                # Calculate min/max/avg for each bucket
+                formatted_data = []
+                for bucket in sorted(aggregated.keys()):
+                    values = aggregated[bucket]["values"]
+                    formatted_data.append({
+                        "timestamp": bucket,
+                        "value_min": min(values),
+                        "value_avg": sum(values) / len(values),
+                        "value_max": max(values),
+                        "num": len(values)
+                    })
+
+                results[itemid] = {
+                    "name": item_name,
+                    "source": "history",
+                    "data": formatted_data
+                }
+            else:
+                results[itemid] = {
+                    "name": item_name,
+                    "source": "none",
+                    "data": [],
+                    "error": "No data available for this time period"
+                }
+
+    return format_response(results)
+
+
+@mcp.tool()
+def host_metrics_30d(hostid: str, metrics: Optional[List[str]] = None) -> str:
+    """Get 30-day historical metrics (CPU, RAM, Network) for a host.
+
+    This function retrieves historical data for the last 30 days using trends
+    (hourly aggregates) for efficiency. It automatically discovers the relevant
+    item IDs for CPU, RAM, and Network metrics.
+
+    Args:
+        hostid: Host ID to get metrics for
+        metrics: List of metrics to retrieve. Options: cpu, ram, network
+                Default: ["cpu", "ram", "network"] (all metrics)
+
+    Returns:
+        str: JSON formatted data with 30-day trends for each metric
+    """
+    client = get_zabbix_client()
+
+    # Default to all metrics
+    if not metrics:
+        metrics = ["cpu", "ram", "network"]
+
+    # Calculate time range (last 30 days)
+    import time
+    time_till = int(time.time())
+    time_from = time_till - (30 * 24 * 60 * 60)  # 30 days in seconds
+
+    results = {
+        "hostid": hostid,
+        "time_from": time_from,
+        "time_till": time_till,
+        "period_days": 30,
+        "metrics": {}
+    }
+
+    # Get all items for this host first
+    all_items = client.item.get(
+        hostids=[hostid],
+        output=["itemid", "name", "key_", "value_type"],
+        monitored=True
+    )
+
+    # Search patterns for each metric type
+    metric_patterns = {
+        "cpu": ["system.cpu.util", "system.cpu.load"],
+        "ram": ["vm.memory", "memory"],
+        "network": ["net.if.in", "net.if.out"]
+    }
+
+    for metric in metrics:
+        if metric not in metric_patterns:
+            results["metrics"][metric] = {"error": f"Unknown metric: {metric}"}
+            continue
+
+        # Find matching items
+        patterns = metric_patterns[metric]
+        matching_items = []
+
+        for item in all_items:
+            key = item.get("key_", "")
+            name = item.get("name", "").lower()
+
+            # Match by key or name
+            if any(pattern in key for pattern in patterns) or \
+               any(pattern in name for pattern in patterns):
+                matching_items.append(item)
+
+        if not matching_items:
+            results["metrics"][metric] = {"error": f"No items found for {metric}"}
+            continue
+
+        # Get trend data for all matching items
+        metric_data = {}
+
+        for item in matching_items[:3]:  # Limit to top 3 items per metric
+            itemid = item["itemid"]
+            item_name = item["name"]
+            value_type = int(item.get("value_type", 0))
+
+            # Try trend data first (hourly aggregates, more efficient)
+            trend_data = client.trend.get(
+                itemids=[itemid],
+                time_from=time_from,
+                time_till=time_till,
+                output="extend",
+                sortfield="clock",
+                sortorder="ASC"
+            )
+
+            if trend_data:
+                # Format trend data
+                formatted = []
+                for point in trend_data:
+                    formatted.append({
+                        "timestamp": int(point["clock"]),
+                        "value_min": float(point["value_min"]),
+                        "value_avg": float(point["value_avg"]),
+                        "value_max": float(point["value_max"]),
+                        "num": int(point.get("num", 1))
+                    })
+
+                metric_data[item_name] = {
+                    "itemid": itemid,
+                    "key": item["key_"],
+                    "source": "trend",
+                    "data_points": len(formatted),
+                    "data": formatted
+                }
+            else:
+                # Fall back to history (last 7 days only due to retention)
+                history_type = 0 if value_type == 0 else 3
+
+                # Limit history to 7 days to avoid hitting retention limits
+                hist_time_from = max(time_from, time_till - (7 * 24 * 60 * 60))
+
+                history_data = client.history.get(
+                    itemids=[itemid],
+                    history=history_type,
+                    time_from=hist_time_from,
+                    time_till=time_till,
+                    output="extend",
+                    sortfield="clock",
+                    sortorder="ASC",
+                    limit=1000  # Limit to avoid huge payloads
+                )
+
+                if history_data:
+                    formatted = []
+                    for point in history_data:
+                        formatted.append({
+                            "timestamp": int(point["clock"]),
+                            "value": float(point["value"])
+                        })
+
+                    metric_data[item_name] = {
+                        "itemid": itemid,
+                        "key": item["key_"],
+                        "source": "history",
+                        "warning": "Limited to last 7 days (history retention)",
+                        "data_points": len(formatted),
+                        "data": formatted
+                    }
+                else:
+                    metric_data[item_name] = {
+                        "itemid": itemid,
+                        "key": item["key_"],
+                        "source": "none",
+                        "error": "No data available"
+                    }
+
+        results["metrics"][metric] = metric_data
+
+    return format_response(results)
 
 
 # USER MANAGEMENT
