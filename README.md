@@ -49,6 +49,8 @@ A comprehensive Model Context Protocol (MCP) server for Zabbix integration using
 ### 📈 Data Retrieval
 - `history_get` - Access historical monitoring data
 - `trend_get` - Retrieve trend data and statistics
+- `history_get_aggregated` - Get aggregated historical data for extended time periods (auto-selects trends or history)
+- `host_metrics_30d` - Retrieve 30-day historical metrics (CPU, RAM, Network) with automatic item discovery
 
 ### 👤 User Management
 - `user_get` - Retrieve user accounts
@@ -234,6 +236,28 @@ history_get(
 )
 ```
 
+**Get aggregated historical data (auto-selects trends or history):**
+```python
+# Automatically tries trend data first (365-day retention)
+# Falls back to history data (7-day retention) if needed
+history_get_aggregated(
+    itemids=["95652", "95657", "95684"],
+    time_from=1733097600,  # Unix timestamp
+    time_till=1734307200,
+    interval_minutes=60    # 60-minute aggregation buckets
+)
+```
+
+**Get 30-day host metrics with automatic item discovery:**
+```python
+# Automatically discovers CPU, RAM, and Network items for the host
+# Returns 30 days of hourly trend data
+host_metrics_30d(
+    hostid="10963",
+    metrics=["cpu", "ram", "network"]  # Optional, defaults to all three
+)
+```
+
 **Get all proxies:**
 ```python
 proxy_get()
@@ -254,7 +278,9 @@ This server is designed to work with MCP-compatible clients like Claude Desktop.
 
 ## Docker Support
 
-### Using Docker Compose
+### Using Docker Compose (SSE Mode)
+
+The default Docker setup runs the server in SSE (Server-Sent Events) mode for HTTP-based integrations:
 
 1. **Configure environment:**
    ```bash
@@ -264,7 +290,49 @@ This server is designed to work with MCP-compatible clients like Claude Desktop.
 
 2. **Run with Docker Compose:**
    ```bash
-   docker compose up -d
+   docker-compose up -d
+   ```
+
+3. **Verify health:**
+   ```bash
+   docker ps --filter "name=zabbix-mcp-server"
+   # Should show "healthy" status
+   ```
+
+### Using Docker with STDIO Mode (Claude Code Integration)
+
+For Claude Code integration using stdio transport, use `docker exec` to run the server:
+
+1. **Start the container in background:**
+   ```bash
+   docker-compose up -d
+   ```
+
+2. **Add to Claude Code's `.claude.json`:**
+   ```json
+   {
+     "mcpServers": {
+       "zabbix": {
+         "type": "stdio",
+         "command": "docker",
+         "args": [
+           "exec",
+           "-i",
+           "zabbix-mcp-server",
+           "python",
+           "-c",
+           "import sys; sys.path.insert(0, 'src'); from zabbix_mcp_server import mcp; mcp.run(transport='stdio')"
+         ],
+         "env": {}
+       }
+     }
+   }
+   ```
+
+3. **Reload Claude Code:**
+   ```bash
+   # Reload Claude Code to pick up the new MCP server
+   # The Zabbix MCP should now appear as "connected"
    ```
 
 ### Building Docker Image

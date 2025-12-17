@@ -14,7 +14,7 @@ services:
     volumes:
       - ./logs:/app/logs
     healthcheck:
-      test: ["CMD", "python", "test_server.py"]
+      test: ["CMD", "python", "scripts/test_server.py"]
       interval: 30s
       timeout: 10s
       retries: 3
