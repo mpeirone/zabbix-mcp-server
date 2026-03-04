@@ -1,0 +1,51 @@
+schema_version: "1.0"
+
+target:
+  command: "uv"
+  args: ["run", "python", "integration/run_server.py"]
+
+redact:
+  server_url: false
+  env:
+    - ZABBIX_TOKEN
+    - ZABBIX_USER
+    - ZABBIX_PASSWORD
+  patterns:
+    - "https?://[^\\s\"']+"
+
+scenarios:
+  protocol_and_errors:
+    description: "Protocol handshake, tool schema listing, and error handling for core monitoring tools"
+    actions:
+      - list_tools
+      - call_tool:
+          name: host_get
+          arguments: {}
+      - call_tool:
+          name: hostgroup_get
+          arguments: {}
+      - call_tool:
+          name: item_get
+          arguments: {}
+      - call_tool:
+          name: trigger_get
+          arguments: {}
+      - call_tool:
+          name: problem_get
+          arguments: {}
+      - call_tool:
+          name: template_get
+          arguments: {}
+      - call_tool:
+          name: host_create
+          arguments:
+            host: "test-host"
+            groups:
+              - groupid: "1"
+            interfaces:
+              - type: 1
+                main: 1
+                useip: 1
+                ip: "127.0.0.1"
+                dns: ""
+                port: "10050"

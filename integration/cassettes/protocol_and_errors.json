@@ -1,0 +1,3503 @@
+{
+  "version": "1.0",
+  "metadata": {
+    "recorded_at": "2026-03-04T08:25:33.799776+00:00",
+    "server_url": "stdio://uv run python integration/run_server.py",
+    "transport_type": "stdio",
+    "protocol_version": "2025-06-18",
+    "server_info": {
+      "name": "Zabbix MCP Server",
+      "version": "1.17.0"
+    }
+  },
+  "interactions": [
+    {
+      "type": "jsonrpc_request",
+      "request": {
+        "jsonrpc": "2.0",
+        "id": 0,
+        "method": "initialize",
+        "params": {
+          "protocolVersion": "2025-11-25",
+          "capabilities": {},
+          "clientInfo": {
+            "name": "mcp-recorder",
+            "version": "0.1.0"
+          }
+        }
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 0,
+        "result": {
+          "protocolVersion": "2025-06-18",
+          "capabilities": {
+            "experimental": {},
+            "prompts": {
+              "listChanged": false
+            },
+            "resources": {
+              "subscribe": false,
+              "listChanged": false
+            },
+            "tools": {
+              "listChanged": true
+            }
+          },
+          "serverInfo": {
+            "name": "Zabbix MCP Server",
+            "version": "1.17.0"
+          }
+        }
+      },
+      "response_is_sse": false,
+      "response_status": 200,
+      "latency_ms": 602,
+      "http_method": null,
+      "http_path": null
+    },
+    {
+      "type": "notification",
+      "request": {
+        "jsonrpc": "2.0",
+        "method": "notifications/initialized"
+      },
+      "response": null,
+      "response_is_sse": false,
+      "response_status": 202,
+      "latency_ms": 0,
+      "http_method": null,
+      "http_path": null
+    },
+    {
+      "type": "jsonrpc_request",
+      "request": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "tools/list",
+        "params": {}
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": {
+          "tools": [
+            {
+              "name": "host_get",
+              "description": "Get hosts from Zabbix with optional filtering.\n\nArgs:\n    hostids: List of host IDs to retrieve\n    groupids: List of host group IDs to filter by\n    templateids: List of template IDs to filter by\n    output: Output format (extend or list of specific fields)\n    search: Search criteria\n    filter: Filter criteria\n    limit: Maximum number of results\n    \nReturns:\n    str: JSON formatted list of hosts",
+              "inputSchema": {
+                "properties": {
+                  "hostids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "groupids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "templateids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "output": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    ],
+                    "default": "extend"
+                  },
+                  "search": {
+                    "anyOf": [
+                      {
+                        "additionalProperties": {
+                          "type": "string"
+                        },
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "filter": {
+                    "anyOf": [
+                      {
+                        "additionalProperties": true,
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "limit": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "host_create",
+              "description": "Create a new host in Zabbix.\n\nArgs:\n    host: Host name\n    groups: List of host groups (format: [{\"groupid\": \"1\"}])\n    interfaces: List of host interfaces\n    templates: List of templates to link (format: [{\"templateid\": \"1\"}])\n    inventory_mode: Inventory mode (-1=disabled, 0=manual, 1=automatic)\n    status: Host status (0=enabled, 1=disabled)\n    \nReturns:\n    str: JSON formatted creation result",
+              "inputSchema": {
+                "properties": {
+                  "host": {
+                    "type": "string"
+                  },
+                  "groups": {
+                    "items": {
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "interfaces": {
+                    "items": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "templates": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "additionalProperties": {
+                            "type": "string"
+                          },
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "inventory_mode": {
+                    "default": -1,
+                    "type": "integer"
+                  },
+                  "status": {
+                    "default": 0,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "host",
+                  "groups",
+                  "interfaces"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "host_update",
+              "description": "Update an existing host in Zabbix.\n\nArgs:\n    hostid: Host ID to update\n    host: New host name\n    name: New visible name\n    status: New status (0=enabled, 1=disabled)\n    \nReturns:\n    str: JSON formatted update result",
+              "inputSchema": {
+                "properties": {
+                  "hostid": {
+                    "type": "string"
+                  },
+                  "host": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "status": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "hostid"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "host_delete",
+              "description": "Delete hosts from Zabbix.\n\nArgs:\n    hostids: List of host IDs to delete\n    \nReturns:\n    str: JSON formatted deletion result",
+              "inputSchema": {
+                "properties": {
+                  "hostids": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "hostids"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "hostgroup_get",
+              "description": "Get host groups from Zabbix.\n\nArgs:\n    groupids: List of group IDs to retrieve\n    output: Output format (extend or list of specific fields)\n    search: Search criteria\n    filter: Filter criteria\n    \nReturns:\n    str: JSON formatted list of host groups",
+              "inputSchema": {
+                "properties": {
+                  "groupids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "output": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    ],
+                    "default": "extend"
+                  },
+                  "search": {
+                    "anyOf": [
+                      {
+                        "additionalProperties": {
+                          "type": "string"
+                        },
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "filter": {
+                    "anyOf": [
+                      {
+                        "additionalProperties": true,
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "hostgroup_create",
+              "description": "Create a new host group in Zabbix.\n\nArgs:\n    name: Host group name\n    \nReturns:\n    str: JSON formatted creation result",
+              "inputSchema": {
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "hostgroup_update",
+              "description": "Update an existing host group in Zabbix.\n\nArgs:\n    groupid: Group ID to update\n    name: New group name\n    \nReturns:\n    str: JSON formatted update result",
+              "inputSchema": {
+                "properties": {
+                  "groupid": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "groupid",
+                  "name"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "hostgroup_delete",
+              "description": "Delete host groups from Zabbix.\n\nArgs:\n    groupids: List of group IDs to delete\n    \nReturns:\n    str: JSON formatted deletion result",
+              "inputSchema": {
+                "properties": {
+                  "groupids": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "groupids"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "item_get",
+              "description": "Get items from Zabbix with optional filtering.\n\nArgs:\n    itemids: List of item IDs to retrieve\n    hostids: List of host IDs to filter by\n    groupids: List of host group IDs to filter by\n    templateids: List of template IDs to filter by\n    output: Output format (extend or list of specific fields)\n    search: Search criteria\n    filter: Filter criteria\n    limit: Maximum number of results\n    \nReturns:\n    str: JSON formatted list of items",
+              "inputSchema": {
+                "properties": {
+                  "itemids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "hostids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "groupids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "templateids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "output": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    ],
+                    "default": "extend"
+                  },
+                  "search": {
+                    "anyOf": [
+                      {
+                        "additionalProperties": {
+                          "type": "string"
+                        },
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "filter": {
+                    "anyOf": [
+                      {
+                        "additionalProperties": true,
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "limit": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "item_create",
+              "description": "Create a new item in Zabbix.\n\nArgs:\n    name: Item name\n    key_: Item key\n    hostid: Host ID\n    type: Item type (0=Zabbix agent, 2=Zabbix trapper, etc.)\n    value_type: Value type (0=float, 1=character, 3=unsigned int, 4=text)\n    delay: Update interval\n    units: Value units\n    description: Item description\n    \nReturns:\n    str: JSON formatted creation result",
+              "inputSchema": {
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "key_": {
+                    "type": "string"
+                  },
+                  "hostid": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "integer"
+                  },
+                  "value_type": {
+                    "type": "integer"
+                  },
+                  "delay": {
+                    "default": "1m",
+                    "type": "string"
+                  },
+                  "units": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "description": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name",
+                  "key_",
+                  "hostid",
+                  "type",
+                  "value_type"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "item_update",
+              "description": "Update an existing item in Zabbix.\n\nArgs:\n    itemid: Item ID to update\n    name: New item name\n    key_: New item key\n    delay: New update interval\n    status: New status (0=enabled, 1=disabled)\n    \nReturns:\n    str: JSON formatted update result",
+              "inputSchema": {
+                "properties": {
+                  "itemid": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "key_": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "delay": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "status": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "itemid"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "item_delete",
+              "description": "Delete items from Zabbix.\n\nArgs:\n    itemids: List of item IDs to delete\n    \nReturns:\n    str: JSON formatted deletion result",
+              "inputSchema": {
+                "properties": {
+                  "itemids": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "itemids"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "trigger_get",
+              "description": "Get triggers from Zabbix with optional filtering.\n\nArgs:\n    triggerids: List of trigger IDs to retrieve\n    hostids: List of host IDs to filter by\n    groupids: List of host group IDs to filter by\n    templateids: List of template IDs to filter by\n    output: Output format (extend or list of specific fields)\n    search: Search criteria\n    filter: Filter criteria\n    limit: Maximum number of results\n    \nReturns:\n    str: JSON formatted list of triggers",
+              "inputSchema": {
+                "properties": {
+                  "triggerids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "hostids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "groupids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "templateids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "output": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    ],
+                    "default": "extend"
+                  },
+                  "search": {
+                    "anyOf": [
+                      {
+                        "additionalProperties": {
+                          "type": "string"
+                        },
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "filter": {
+                    "anyOf": [
+                      {
+                        "additionalProperties": true,
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "limit": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "trigger_create",
+              "description": "Create a new trigger in Zabbix.\n\nArgs:\n    description: Trigger description\n    expression: Trigger expression\n    priority: Severity (0=not classified, 1=info, 2=warning, 3=average, 4=high, 5=disaster)\n    status: Status (0=enabled, 1=disabled)\n    comments: Additional comments\n    \nReturns:\n    str: JSON formatted creation result",
+              "inputSchema": {
+                "properties": {
+                  "description": {
+                    "type": "string"
+                  },
+                  "expression": {
+                    "type": "string"
+                  },
+                  "priority": {
+                    "default": 0,
+                    "type": "integer"
+                  },
+                  "status": {
+                    "default": 0,
+                    "type": "integer"
+                  },
+                  "comments": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "description",
+                  "expression"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "trigger_update",
+              "description": "Update an existing trigger in Zabbix.\n\nArgs:\n    triggerid: Trigger ID to update\n    description: New trigger description\n    expression: New trigger expression\n    priority: New severity level\n    status: New status (0=enabled, 1=disabled)\n    \nReturns:\n    str: JSON formatted update result",
+              "inputSchema": {
+                "properties": {
+                  "triggerid": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "expression": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "priority": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "status": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "triggerid"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "trigger_delete",
+              "description": "Delete triggers from Zabbix.\n\nArgs:\n    triggerids: List of trigger IDs to delete\n    \nReturns:\n    str: JSON formatted deletion result",
+              "inputSchema": {
+                "properties": {
+                  "triggerids": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "triggerids"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "template_get",
+              "description": "Get templates from Zabbix with optional filtering.\n\nArgs:\n    templateids: List of template IDs to retrieve\n    groupids: List of host group IDs to filter by\n    hostids: List of host IDs to filter by\n    output: Output format (extend or list of specific fields)\n    search: Search criteria\n    filter: Filter criteria\n    \nReturns:\n    str: JSON formatted list of templates",
+              "inputSchema": {
+                "properties": {
+                  "templateids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "groupids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "hostids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "output": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    ],
+                    "default": "extend"
+                  },
+                  "search": {
+                    "anyOf": [
+                      {
+                        "additionalProperties": {
+                          "type": "string"
+                        },
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "filter": {
+                    "anyOf": [
+                      {
+                        "additionalProperties": true,
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "template_create",
+              "description": "Create a new template in Zabbix.\n\nArgs:\n    host: Template technical name\n    groups: List of host groups (format: [{\"groupid\": \"1\"}])\n    name: Template visible name\n    description: Template description\n    \nReturns:\n    str: JSON formatted creation result",
+              "inputSchema": {
+                "properties": {
+                  "host": {
+                    "type": "string"
+                  },
+                  "groups": {
+                    "items": {
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "description": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "host",
+                  "groups"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "template_update",
+              "description": "Update an existing template in Zabbix.\n\nArgs:\n    templateid: Template ID to update\n    host: New template technical name\n    name: New template visible name\n    description: New template description\n    \nReturns:\n    str: JSON formatted update result",
+              "inputSchema": {
+                "properties": {
+                  "templateid": {
+                    "type": "string"
+                  },
+                  "host": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "description": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "templateid"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "template_delete",
+              "description": "Delete templates from Zabbix.\n\nArgs:\n    templateids: List of template IDs to delete\n    \nReturns:\n    str: JSON formatted deletion result",
+              "inputSchema": {
+                "properties": {
+                  "templateids": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "templateids"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "problem_get",
+              "description": "Get problems from Zabbix with optional filtering.\n\nArgs:\n    eventids: List of event IDs to retrieve\n    groupids: List of host group IDs to filter by\n    hostids: List of host IDs to filter by\n    objectids: List of object IDs to filter by\n    output: Output format (extend or list of specific fields)\n    time_from: Start time (Unix timestamp)\n    time_till: End time (Unix timestamp)\n    recent: Only recent problems\n    severities: List of severity levels to filter by\n    limit: Maximum number of results\n    \nReturns:\n    str: JSON formatted list of problems",
+              "inputSchema": {
+                "properties": {
+                  "eventids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "groupids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "hostids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "objectids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "output": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    ],
+                    "default": "extend"
+                  },
+                  "time_from": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "time_till": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "recent": {
+                    "default": false,
+                    "type": "boolean"
+                  },
+                  "severities": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "integer"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "limit": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "event_get",
+              "description": "Get events from Zabbix with optional filtering.\n\nArgs:\n    eventids: List of event IDs to retrieve\n    groupids: List of host group IDs to filter by\n    hostids: List of host IDs to filter by\n    objectids: List of object IDs to filter by\n    output: Output format (extend or list of specific fields)\n    time_from: Start time (Unix timestamp)\n    time_till: End time (Unix timestamp)\n    limit: Maximum number of results\n    \nReturns:\n    str: JSON formatted list of events",
+              "inputSchema": {
+                "properties": {
+                  "eventids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "groupids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "hostids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "objectids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "output": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    ],
+                    "default": "extend"
+                  },
+                  "time_from": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "time_till": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "limit": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "event_acknowledge",
+              "description": "Acknowledge events in Zabbix.\n\nArgs:\n    eventids: List of event IDs to acknowledge\n    action: Acknowledge action (1=acknowledge, 2=close, etc.)\n    message: Acknowledge message\n    \nReturns:\n    str: JSON formatted acknowledgment result",
+              "inputSchema": {
+                "properties": {
+                  "eventids": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "action": {
+                    "default": 1,
+                    "type": "integer"
+                  },
+                  "message": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "eventids"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "history_get",
+              "description": "Get history data from Zabbix.\n\nArgs:\n    itemids: List of item IDs to get history for\n    history: History type (0=float, 1=character, 2=log, 3=unsigned, 4=text)\n    time_from: Start time (Unix timestamp)\n    time_till: End time (Unix timestamp)\n    limit: Maximum number of results\n    sortfield: Field to sort by\n    sortorder: Sort order (ASC or DESC)\n    \nReturns:\n    str: JSON formatted history data",
+              "inputSchema": {
+                "properties": {
+                  "itemids": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "history": {
+                    "default": 0,
+                    "type": "integer"
+                  },
+                  "time_from": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "time_till": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "limit": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "sortfield": {
+                    "default": "clock",
+                    "type": "string"
+                  },
+                  "sortorder": {
+                    "default": "DESC",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "itemids"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "trend_get",
+              "description": "Get trend data from Zabbix.\n\nArgs:\n    itemids: List of item IDs to get trends for\n    time_from: Start time (Unix timestamp)\n    time_till: End time (Unix timestamp)\n    limit: Maximum number of results\n    \nReturns:\n    str: JSON formatted trend data",
+              "inputSchema": {
+                "properties": {
+                  "itemids": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "time_from": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "time_till": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "limit": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "itemids"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "user_get",
+              "description": "Get users from Zabbix with optional filtering.\n\nArgs:\n    userids: List of user IDs to retrieve\n    output: Output format (extend or list of specific fields)\n    search: Search criteria\n    filter: Filter criteria\n    \nReturns:\n    str: JSON formatted list of users",
+              "inputSchema": {
+                "properties": {
+                  "userids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "output": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    ],
+                    "default": "extend"
+                  },
+                  "search": {
+                    "anyOf": [
+                      {
+                        "additionalProperties": {
+                          "type": "string"
+                        },
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "filter": {
+                    "anyOf": [
+                      {
+                        "additionalProperties": true,
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "user_create",
+              "description": "Create a new user in Zabbix.\n\nArgs:\n    username: Username\n    passwd: Password\n    usrgrps: List of user groups (format: [{\"usrgrpid\": \"1\"}])\n    name: First name\n    surname: Last name\n    email: Email address\n    \nReturns:\n    str: JSON formatted creation result",
+              "inputSchema": {
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "passwd": {
+                    "type": "string"
+                  },
+                  "usrgrps": {
+                    "items": {
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "surname": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "email": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "username",
+                  "passwd",
+                  "usrgrps"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "user_update",
+              "description": "Update an existing user in Zabbix.\n\nArgs:\n    userid: User ID to update\n    username: New username\n    name: New first name\n    surname: New last name\n    email: New email address\n    \nReturns:\n    str: JSON formatted update result",
+              "inputSchema": {
+                "properties": {
+                  "userid": {
+                    "type": "string"
+                  },
+                  "username": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "surname": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "email": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "userid"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "user_delete",
+              "description": "Delete users from Zabbix.\n\nArgs:\n    userids: List of user IDs to delete\n    \nReturns:\n    str: JSON formatted deletion result",
+              "inputSchema": {
+                "properties": {
+                  "userids": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "userids"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "proxy_get",
+              "description": "Get proxies from Zabbix with optional filtering.\n\nArgs:\n    proxyids: List of proxy IDs to retrieve\n    output: Output format (extend, shorten, or specific fields)\n    search: Search criteria\n    filter: Filter criteria\n    limit: Maximum number of results\n    \nReturns:\n    str: JSON formatted list of proxies",
+              "inputSchema": {
+                "properties": {
+                  "proxyids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "output": {
+                    "default": "extend",
+                    "type": "string"
+                  },
+                  "search": {
+                    "anyOf": [
+                      {
+                        "additionalProperties": {
+                          "type": "string"
+                        },
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "filter": {
+                    "anyOf": [
+                      {
+                        "additionalProperties": true,
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "limit": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "proxy_create",
+              "description": "Create a new proxy in Zabbix.\n\nArgs:\n    host: Proxy name\n    status: Proxy status (5=active proxy, 6=passive proxy)\n    description: Proxy description\n    tls_connect: TLS connection settings (1=no encryption, 2=PSK, 4=certificate)\n    tls_accept: TLS accept settings (1=no encryption, 2=PSK, 4=certificate)\n    \nReturns:\n    str: JSON formatted creation result",
+              "inputSchema": {
+                "properties": {
+                  "host": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "default": 5,
+                    "type": "integer"
+                  },
+                  "description": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "tls_connect": {
+                    "default": 1,
+                    "type": "integer"
+                  },
+                  "tls_accept": {
+                    "default": 1,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "host"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "proxy_update",
+              "description": "Update an existing proxy in Zabbix.\n\nArgs:\n    proxyid: Proxy ID to update\n    host: New proxy name\n    status: New proxy status (5=active proxy, 6=passive proxy)\n    description: New proxy description\n    tls_connect: New TLS connection settings\n    tls_accept: New TLS accept settings\n    \nReturns:\n    str: JSON formatted update result",
+              "inputSchema": {
+                "properties": {
+                  "proxyid": {
+                    "type": "string"
+                  },
+                  "host": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "status": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "description": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "tls_connect": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "tls_accept": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "proxyid"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "proxy_delete",
+              "description": "Delete proxies from Zabbix.\n\nArgs:\n    proxyids: List of proxy IDs to delete\n    \nReturns:\n    str: JSON formatted deletion result",
+              "inputSchema": {
+                "properties": {
+                  "proxyids": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "proxyids"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "maintenance_get",
+              "description": "Get maintenance periods from Zabbix.\n\nArgs:\n    maintenanceids: List of maintenance IDs to retrieve\n    groupids: List of host group IDs to filter by\n    hostids: List of host IDs to filter by\n    output: Output format (extend or list of specific fields)\n    \nReturns:\n    str: JSON formatted list of maintenance periods",
+              "inputSchema": {
+                "properties": {
+                  "maintenanceids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "groupids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "hostids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "output": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    ],
+                    "default": "extend"
+                  }
+                },
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "maintenance_create",
+              "description": "Create a new maintenance period in Zabbix.\n\nArgs:\n    name: Maintenance name\n    active_since: Start time (Unix timestamp)\n    active_till: End time (Unix timestamp)\n    groupids: List of host group IDs\n    hostids: List of host IDs\n    timeperiods: List of time periods\n    description: Maintenance description\n    \nReturns:\n    str: JSON formatted creation result",
+              "inputSchema": {
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "active_since": {
+                    "type": "integer"
+                  },
+                  "active_till": {
+                    "type": "integer"
+                  },
+                  "groupids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "hostids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "timeperiods": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "additionalProperties": true,
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "description": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name",
+                  "active_since",
+                  "active_till"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "maintenance_update",
+              "description": "Update an existing maintenance period in Zabbix.\n\nArgs:\n    maintenanceid: Maintenance ID to update\n    name: New maintenance name\n    active_since: New start time (Unix timestamp)\n    active_till: New end time (Unix timestamp)\n    description: New maintenance description\n    \nReturns:\n    str: JSON formatted update result",
+              "inputSchema": {
+                "properties": {
+                  "maintenanceid": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "active_since": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "active_till": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "description": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "maintenanceid"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "maintenance_delete",
+              "description": "Delete maintenance periods from Zabbix.\n\nArgs:\n    maintenanceids: List of maintenance IDs to delete\n    \nReturns:\n    str: JSON formatted deletion result",
+              "inputSchema": {
+                "properties": {
+                  "maintenanceids": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "maintenanceids"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "graph_get",
+              "description": "Get graphs from Zabbix with optional filtering.\n\nArgs:\n    graphids: List of graph IDs to retrieve\n    hostids: List of host IDs to filter by\n    templateids: List of template IDs to filter by\n    output: Output format (extend or list of specific fields)\n    search: Search criteria\n    filter: Filter criteria\n    \nReturns:\n    str: JSON formatted list of graphs",
+              "inputSchema": {
+                "properties": {
+                  "graphids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "hostids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "templateids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "output": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    ],
+                    "default": "extend"
+                  },
+                  "search": {
+                    "anyOf": [
+                      {
+                        "additionalProperties": {
+                          "type": "string"
+                        },
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "filter": {
+                    "anyOf": [
+                      {
+                        "additionalProperties": true,
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "discoveryrule_get",
+              "description": "Get discovery rules from Zabbix with optional filtering.\n\nArgs:\n    itemids: List of discovery rule IDs to retrieve\n    hostids: List of host IDs to filter by\n    templateids: List of template IDs to filter by\n    output: Output format (extend or list of specific fields)\n    search: Search criteria\n    filter: Filter criteria\n    \nReturns:\n    str: JSON formatted list of discovery rules",
+              "inputSchema": {
+                "properties": {
+                  "itemids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "hostids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "templateids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "output": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    ],
+                    "default": "extend"
+                  },
+                  "search": {
+                    "anyOf": [
+                      {
+                        "additionalProperties": {
+                          "type": "string"
+                        },
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "filter": {
+                    "anyOf": [
+                      {
+                        "additionalProperties": true,
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "itemprototype_get",
+              "description": "Get item prototypes from Zabbix with optional filtering.\n\nArgs:\n    itemids: List of item prototype IDs to retrieve\n    discoveryids: List of discovery rule IDs to filter by\n    hostids: List of host IDs to filter by\n    output: Output format (extend or list of specific fields)\n    search: Search criteria\n    filter: Filter criteria\n    \nReturns:\n    str: JSON formatted list of item prototypes",
+              "inputSchema": {
+                "properties": {
+                  "itemids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "discoveryids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "hostids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "output": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    ],
+                    "default": "extend"
+                  },
+                  "search": {
+                    "anyOf": [
+                      {
+                        "additionalProperties": {
+                          "type": "string"
+                        },
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "filter": {
+                    "anyOf": [
+                      {
+                        "additionalProperties": true,
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "configuration_export",
+              "description": "Export configuration from Zabbix.\n\nArgs:\n    format: Export format (json, xml)\n    options: Export options\n    \nReturns:\n    str: JSON formatted export result",
+              "inputSchema": {
+                "properties": {
+                  "format": {
+                    "default": "json",
+                    "type": "string"
+                  },
+                  "options": {
+                    "anyOf": [
+                      {
+                        "additionalProperties": true,
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "configuration_import",
+              "description": "Import configuration to Zabbix.\n\nArgs:\n    format: Import format (json, xml)\n    source: Configuration data to import\n    rules: Import rules\n    \nReturns:\n    str: JSON formatted import result",
+              "inputSchema": {
+                "properties": {
+                  "format": {
+                    "type": "string"
+                  },
+                  "source": {
+                    "type": "string"
+                  },
+                  "rules": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "format",
+                  "source",
+                  "rules"
+                ],
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "usermacro_get",
+              "description": "Get global macros from Zabbix with optional filtering.\n\nArgs:\n    globalmacroids: List of global macro IDs to retrieve\n    hostids: List of host IDs to filter by (for host macros)\n    output: Output format (extend or list of specific fields)\n    search: Search criteria\n    filter: Filter criteria\n    \nReturns:\n    str: JSON formatted list of global macros",
+              "inputSchema": {
+                "properties": {
+                  "globalmacroids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "hostids": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "output": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    ],
+                    "default": "extend"
+                  },
+                  "search": {
+                    "anyOf": [
+                      {
+                        "additionalProperties": {
+                          "type": "string"
+                        },
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "filter": {
+                    "anyOf": [
+                      {
+                        "additionalProperties": true,
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            },
+            {
+              "name": "apiinfo_version",
+              "description": "Get Zabbix API version information.\n\nReturns:\n    str: JSON formatted API version info",
+              "inputSchema": {
+                "properties": {},
+                "type": "object"
+              },
+              "outputSchema": {
+                "properties": {
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "result"
+                ],
+                "type": "object",
+                "x-fastmcp-wrap-result": true
+              },
+              "_meta": {
+                "_fastmcp": {
+                  "tags": []
+                }
+              }
+            }
+          ]
+        }
+      },
+      "response_is_sse": false,
+      "response_status": 200,
+      "latency_ms": 6,
+      "http_method": null,
+      "http_path": null
+    },
+    {
+      "type": "jsonrpc_request",
+      "request": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "tools/call",
+        "params": {
+          "name": "host_get",
+          "arguments": {}
+        }
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Error calling tool 'host_get': ZABBIX_URL environment variable is required"
+            }
+          ],
+          "isError": true
+        }
+      },
+      "response_is_sse": false,
+      "response_status": 200,
+      "latency_ms": 61,
+      "http_method": null,
+      "http_path": null
+    },
+    {
+      "type": "jsonrpc_request",
+      "request": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "tools/call",
+        "params": {
+          "name": "hostgroup_get",
+          "arguments": {}
+        }
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Error calling tool 'hostgroup_get': ZABBIX_URL environment variable is required"
+            }
+          ],
+          "isError": true
+        }
+      },
+      "response_is_sse": false,
+      "response_status": 200,
+      "latency_ms": 41,
+      "http_method": null,
+      "http_path": null
+    },
+    {
+      "type": "jsonrpc_request",
+      "request": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "method": "tools/call",
+        "params": {
+          "name": "item_get",
+          "arguments": {}
+        }
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Error calling tool 'item_get': ZABBIX_URL environment variable is required"
+            }
+          ],
+          "isError": true
+        }
+      },
+      "response_is_sse": false,
+      "response_status": 200,
+      "latency_ms": 43,
+      "http_method": null,
+      "http_path": null
+    },
+    {
+      "type": "jsonrpc_request",
+      "request": {
+        "jsonrpc": "2.0",
+        "id": 5,
+        "method": "tools/call",
+        "params": {
+          "name": "trigger_get",
+          "arguments": {}
+        }
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 5,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Error calling tool 'trigger_get': ZABBIX_URL environment variable is required"
+            }
+          ],
+          "isError": true
+        }
+      },
+      "response_is_sse": false,
+      "response_status": 200,
+      "latency_ms": 47,
+      "http_method": null,
+      "http_path": null
+    },
+    {
+      "type": "jsonrpc_request",
+      "request": {
+        "jsonrpc": "2.0",
+        "id": 6,
+        "method": "tools/call",
+        "params": {
+          "name": "problem_get",
+          "arguments": {}
+        }
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 6,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Error calling tool 'problem_get': ZABBIX_URL environment variable is required"
+            }
+          ],
+          "isError": true
+        }
+      },
+      "response_is_sse": false,
+      "response_status": 200,
+      "latency_ms": 53,
+      "http_method": null,
+      "http_path": null
+    },
+    {
+      "type": "jsonrpc_request",
+      "request": {
+        "jsonrpc": "2.0",
+        "id": 7,
+        "method": "tools/call",
+        "params": {
+          "name": "template_get",
+          "arguments": {}
+        }
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 7,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Error calling tool 'template_get': ZABBIX_URL environment variable is required"
+            }
+          ],
+          "isError": true
+        }
+      },
+      "response_is_sse": false,
+      "response_status": 200,
+      "latency_ms": 48,
+      "http_method": null,
+      "http_path": null
+    },
+    {
+      "type": "jsonrpc_request",
+      "request": {
+        "jsonrpc": "2.0",
+        "id": 8,
+        "method": "tools/call",
+        "params": {
+          "name": "host_create",
+          "arguments": {
+            "host": "test-host",
+            "groups": [
+              {
+                "groupid": "1"
+              }
+            ],
+            "interfaces": [
+              {
+                "type": 1,
+                "main": 1,
+                "useip": 1,
+                "ip": "127.0.0.1",
+                "dns": "",
+                "port": "10050"
+              }
+            ]
+          }
+        }
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 8,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Error calling tool 'host_create': Server is in read-only mode - write operations are not allowed"
+            }
+          ],
+          "isError": true
+        }
+      },
+      "response_is_sse": false,
+      "response_status": 200,
+      "latency_ms": 38,
+      "http_method": null,
+      "http_path": null
+    }
+  ]
+}
