@@ -9,6 +9,10 @@ A comprehensive Model Context Protocol (MCP) server for Zabbix integration using
   <img width="380" height="200" src="https://glama.ai/mcp/servers/@mpeirone/zabbix-mcp-server/badge" alt="zabbix-mcp-server MCP server" />
 </a>
 
+## Hosted deployment
+
+A hosted deployment is available on [Fronteir AI](https://fronteir.ai/mcp/mpeirone-zabbix-mcp-server).
+
 ## Features
 
 ### 🏠 Host Management
