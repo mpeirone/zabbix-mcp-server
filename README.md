@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/mpeirone-zabbix-mcp-server-badge.png)](https://mseep.ai/app/mpeirone-zabbix-mcp-server)
+
 # Zabbix MCP Server
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
