@@ -1,0 +1,33 @@
+name: Integration Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Install project dependencies
+        run: uv sync
+
+      - name: Install mcp-recorder
+        run: pip install -r integration/requirements.txt
+
+      - name: Verify protocol cassette
+        run: |
+          mcp-recorder verify \
+            --cassette integration/cassettes/protocol_and_errors.json \
+            --target-stdio "uv run python integration/run_server.py"
