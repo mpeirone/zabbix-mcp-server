@@ -12,7 +12,7 @@ License: GPL-3.0-or-later
 
 import logging
 import threading
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 from fastmcp import FastMCP
 from .api_docs_scraper import scrape_zabbix_api, get_method_docs
 from starlette.requests import Request
@@ -81,7 +81,7 @@ def _get_api_objects() -> Dict[str, list[str]]:
 
 @mcp.tool()
 @_with_server_url
-def zabbix_api(method: str, params: Optional[Dict[str, Any]] = None) -> str:
+def zabbix_api(method: str, params: Optional[Union[Dict[str, Any], List[Any]]] = None) -> str:
     """Execute Zabbix API method.
 
     This is the main tool for interacting with Zabbix. It requires multiple
@@ -139,7 +139,7 @@ def zabbix_api(method: str, params: Optional[Dict[str, Any]] = None) -> str:
     if params is None:
         params = {}
 
-    if method.endswith(".get") and "output" not in params:
+    if isinstance(params, dict) and method.endswith(".get") and "output" not in params:
         params = {**params, "output": ["name"]}
         logger.debug(f"Applied default output=['name'] for {method}")
 
@@ -156,7 +156,9 @@ def zabbix_api(method: str, params: Optional[Dict[str, Any]] = None) -> str:
     api_method = getattr(api_obj, api_action)
 
     try:
-        if params:
+        if isinstance(params, list):
+            result = api_method(*params)
+        elif params:
             result = api_method(**params)
         else:
             result = api_method()
