@@ -10,9 +10,10 @@ Author: Zabbix MCP Server Contributors
 License: GPL-3.0-or-later
 """
 
+import json
 import logging
 import threading
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 from fastmcp import FastMCP
 from .api_docs_scraper import scrape_zabbix_api, get_method_docs
 from starlette.requests import Request
@@ -81,7 +82,7 @@ def _get_api_objects() -> Dict[str, list[str]]:
 
 @mcp.tool()
 @_with_server_url
-def zabbix_api(method: str, params: Optional[Dict[str, Any]] = None) -> str:
+def zabbix_api(method: str, params: Optional[Union[Dict[str, Any], str]] = None) -> str:
     """Execute Zabbix API method.
 
     This is the main tool for interacting with Zabbix. It requires multiple
@@ -135,6 +136,11 @@ def zabbix_api(method: str, params: Optional[Dict[str, Any]] = None) -> str:
         )
 
     client = get_zabbix_client()
+
+    # Depending on how an MCP client marshals tool arguments, params may arrive as a
+    # JSON-encoded string rather than an object; decode it so such calls validate.
+    if isinstance(params, str):
+        params = json.loads(params) if params.strip() else None
 
     if params is None:
         params = {}
